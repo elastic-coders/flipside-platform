@@ -16,3 +16,10 @@ See all available templates
 Configures the flipside app
 
     flipside-init <app_name> <template_name>
+
+
+## Build
+
+To build locally:
+
+    flipside-build

@@ -1,5 +1,0 @@
-appName: {{ app_name }}
-template: {{ template }}
-build: manual
-deploy: 
-  type: salt

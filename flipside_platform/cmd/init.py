@@ -21,22 +21,26 @@ def _render_to_file(template, path, context=None, force=False):
 
 def _write_flipfile(app_name, template, force=False):
     path = config.get_flipfile_path()
+    base_dir = os.path.dirname(path)
+    if not os.path.isdir(base_dir):
+        os.makedirs(base_dir)
     cfg = config.get_flipside_config(app_name, template)
-    _render_to_file('flipfile.yaml', path, context=cfg, force=force)
+    _render_to_file('app_templates/{}/flipfile.yaml'.format(template),
+                    path, context=cfg, force=force)
 
 
 def _write_saltstack_pillar(app_name, template, force=False):
-    salt_path = config.get_salt_path()
-    if not os.path.isdir(salt_path):
-        os.makedirs(salt_path)
+    salt_pillar_path = config.get_salt_pillar_path()
+    salt_dir = os.path.dirname(salt_pillar_path)
+    if not os.path.isdir(salt_dir):
+        os.makedirs(salt_dir)
     cfg = config.get_salt_pillar_config(app_name, template)
     path = config.get_salt_pillar_path()
-    template =
-    _render_to_file('salt/{}/pillar.sls'.format(template), path, context=cfg,
-                    force=force)
+    _render_to_file('app_templates/{}/salt/pillar.sls'.format(template),
+                    path, context=cfg, force=force)
     path = config.get_salt_config_path()
-    _render_to_file('salt/{}/config.yaml'.format(template), path, context=cfg,
-                    force=force)
+    _render_to_file('app_templates/{}/salt/config.yaml'.format(template),
+                    path, context=cfg, force=force)
 
 
 def do_init(app_name, template, force=False):

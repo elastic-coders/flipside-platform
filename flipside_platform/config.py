@@ -4,6 +4,7 @@ Config generation.
 import os
 
 import jinja2
+import yaml
 
 
 def _get_common_config(app_name, template):
@@ -42,12 +43,12 @@ def get_salt_pillar_config(app_name, template):
     return _get_common_config(app_name, template)
 
 
-def get_flipside_templates_path():
+def get_flipside_templates_base_dir():
     return os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
 
 
-def get_flipside_deploy_templates_path():
-    return os.path.join(get_flipside_templates_path(), 'deploy_templates')
+def get_flipside_app_templates_base_dir():
+    return os.path.join(get_flipside_templates_base_dir(), 'app_templates')
 
 
 def get_app_path():
@@ -56,12 +57,17 @@ def get_app_path():
     return os.path.abspath('.')
 
 
+def get_app_flipside_path():
+    '''Path to the .flipside dir within the app.'''
+    return os.path.join(get_app_path(), '.flipside')
+
+
 def get_flipfile_path():
-    return os.path.join(get_app_path(), 'flipfile.yaml')
+    return os.path.join(get_app_flipside_path(), 'flipfile.yaml')
 
 
 def get_salt_path():
-    return os.path.join(get_app_path(), 'salt')
+    return os.path.join(get_app_flipside_path(), 'salt')
 
 
 def get_salt_pillar_path():
@@ -74,8 +80,19 @@ def get_salt_config_path():
 
 def get_jinja_environment():
     env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(get_project_templates_path()),
+        loader=jinja2.FileSystemLoader(get_flipside_templates_base_dir()),
         extensions=['jinja2.ext.do'],
         keep_trailing_newline=True,
     )
     return env
+
+
+def get_app_config():
+    '''Config for app as of flipfile.'''
+    with open(get_flipfile_path(), 'rb') as f:
+        return yaml.load(f.read().decode())
+
+
+def get_app_build_dir():
+    '''Directory where to build the app to'''
+    return os.path.join(get_app_path(), '.flipside-build')
