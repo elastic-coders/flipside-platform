@@ -96,3 +96,8 @@ def get_app_config():
 def get_app_build_dir():
     '''Directory where to build the app to'''
     return os.path.join(get_app_path(), '.flipside-build')
+
+
+def get_app_download_dir():
+    '''Cache downloaded files here'''
+    return os.path.join(get_app_path(), '.flipside-download')
