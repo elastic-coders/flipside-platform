@@ -14,7 +14,8 @@ setup(
     entry_points={
         'console_scripts': [
             'flipside-init = flipside_platform.cmd.init:main',
-            'flipside-template = flipside_platform.cmd.template:main'
+            'flipside-template = flipside_platform.cmd.template:main',
+            'flipside-buile = flipside_platform.cmd.build:main'
         ]
     }
 )
