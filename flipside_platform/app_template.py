@@ -3,7 +3,7 @@ Representation of app template
 '''
 import yaml
 
-import .config
+from . import config
 
 
 class AppTemplateNotFound(Exception):

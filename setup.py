@@ -13,9 +13,8 @@ setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'flipside-init = flipside_platform.cmd.init:main',
-            'flipside-template = flipside_platform.cmd.template:main',
-            'flipside-buile = flipside_platform.cmd.build:main'
+            'flipside-{name} = flipside_platform.cmd.{name}:main'.format(name=name)
+            for name in ('init', 'template', 'build')
         ]
     }
 )
