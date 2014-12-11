@@ -3,6 +3,8 @@ flipside-build command
 '''
 import importlib
 import re
+import shutil
+import os
 
 from .. import config
 
@@ -16,6 +18,13 @@ def do_build():
     module, fun = re.match(r'^(.*)\.(.*)', build['function']).groups()
     module = importlib.import_module(module)
     fun = getattr(module, fun)
+
+    # copy salt deploy info into build dir
+    salt_dst_dir = os.path.join(build_dir,
+                                os.path.basename(config.get_salt_path()))
+    shutil.rmtree(salt_dst_dir, ignore_errors=True)
+    shutil.copytree(config.get_salt_path(), salt_dst_dir)
+
     fun(build_dir, **build.get('function_kwargs', {}))
 
 
