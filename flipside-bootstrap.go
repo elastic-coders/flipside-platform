@@ -1,20 +1,21 @@
 package main
 
 import (
-	// "github.com/mitchellh/goamz/aws"
-	// "github.com/mitchellh/goamz/ec2"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"flag"
 )
 
-type Master struct {
-}
+var (
+	accessKey = flag.String("accessKey", "", "The AWS access key"),
+	secretKey = flag.String("secretKey", "", "The AWS secret key"),
+)
 
 func main() {
-	err := BootstrapAws("AKIAID3BWHBPAQEBJJ2Q", "6cV+ODCM3kwkZQ3ZJO6IKYQpOA89UldgvjIdAuv7")
+	err := BootstrapAws(accessKey, secretKey)
 	if err != nil {
 		log.Fatal(err)
 	}
