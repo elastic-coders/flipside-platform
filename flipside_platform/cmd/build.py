@@ -19,11 +19,12 @@ def do_build(**opts):
     module = importlib.import_module(module)
     fun = getattr(module, fun)
 
-    # copy salt deploy info into build dir
-    salt_dst_dir = os.path.join(build_dir,
-                                os.path.basename(config.get_salt_path()))
-    shutil.rmtree(salt_dst_dir, ignore_errors=True)
-    shutil.copytree(config.get_salt_path(), salt_dst_dir)
+    # XXX salt config (unused for now)
+    if os.path.exists(config.get_salt_path()):
+        salt_dst_dir = os.path.join(build_dir,
+                                    os.path.basename(config.get_salt_path()))
+        shutil.rmtree(salt_dst_dir, ignore_errors=True)
+        shutil.copytree(config.get_salt_path(), salt_dst_dir)
     opts.update(build.get('function_kwargs', {}))
     fun(build_dir, **opts)
 
