@@ -7,7 +7,7 @@ from invoke import run
 import flipside_platform.aws
 
 
-def platform_bootstrap(target):
+def do_bootstrap(target):
     '''Bootstrap the platform on different infrastructure types.'''
     if target == 'aws':
         # XXX ???
@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('target')
     args = parser.parse_args()
-    do_boostrap(args.target)
+    do_bootstrap(args.target)
 
 if __name__ == '__main__':
     main()
