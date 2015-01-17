@@ -28,7 +28,7 @@ To build locally:
 
 To bootstrap a machine:
 
-    flipside-bootstrap target=[aws|vagrant] keyname=<keyname>
+    flipside-bootstrap --target=[aws|vagrant] --keyname=<keyname>
 
     **keyname = pem file name, must be in ./secret folder under project root**
 
