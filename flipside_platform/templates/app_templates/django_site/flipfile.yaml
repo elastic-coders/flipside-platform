@@ -1,0 +1,8 @@
+appName: {{ app_name }}
+template: {{ template }}
+build:
+  function: flipside_platform.build.python_wheel.build_django
+  function_kwargs:
+    settings_module: {{ settings_module }}
+deploy: 
+  type: salt

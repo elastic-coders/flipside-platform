@@ -1,0 +1,4 @@
+gitfs_remotes:
+  - https://github.com/saltstack-formulas/nginx-formula.git
+  - https://github.com/saltstack-formulas/users-formula.git
+  - https://github.com/elastic-coders/uwsgi-ng-formula.git
