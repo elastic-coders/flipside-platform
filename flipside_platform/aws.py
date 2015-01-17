@@ -95,10 +95,11 @@ def provision():
     _provision(config['master']['ip'], config['master']['keypair'])
 
 
-def bootstrap():
+def bootstrap(key_name='testk6', group_name='testg'):
+    # TODO: review default value for key_group and key_name
     access_key = os.environ.get('AWS_ACCESS_KEY_ID')
     if not access_key:
-        access_key = input('AWS access key: ')
+        access_key = raw_input('AWS access key: ')
     secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
     if not secret_key:
         secret_key = getpass.getpass('AWS secret key: ')
@@ -106,9 +107,7 @@ def bootstrap():
                                       aws_access_key_id=access_key,
                                       aws_secret_access_key=secret_key)
 
-    group_name = 'testg'
     group = create_security_group(conn, group_name)
-    key_name = 'testk6'
     key_path = os.path.join('.secrets', '{}.pem'.format(key_name))
     try:
         key = conn.create_key_pair(key_name)
@@ -127,4 +126,5 @@ def bootstrap():
     }
     set_platform_config(config)
     conn.close()
-    provision()
+    # do this in separate command
+    # provision()
