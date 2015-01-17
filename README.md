@@ -30,6 +30,6 @@ To bootstrap a machine:
 
     flipside-bootstrap --target=[aws|vagrant] --keyname=<keyname>
 
-    **keyname = pem file name, must be in ./secret folder under project root**
+    **keyname = pem file name, will be stored into .secret/ folder under project root**
 
 With aws target this command bootstrap an aws machine, creating a configuration file in the project root folder ".flipside-config.json" containing some info on aws bootstrapped machine
