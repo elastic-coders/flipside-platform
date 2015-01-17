@@ -10,7 +10,7 @@ import shutil
 from .. import config
 
 
-def build(dist_dir, deps=True, py_version=2, ucs=4):
+def build(dist_dir, deps=True, py_version=2, ucs=4, **opts):
     try:
         import wheel
     except ImportError:
