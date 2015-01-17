@@ -19,12 +19,15 @@ def do_bootstrap(**opts):
     elif target == 'vagrant':
         run('vagrant up --provision')
 
-
 def main():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--target', help='target machine (aws, vagrant)')
-    parser.add_argument('--keyname', help='pem file name, must be in ./secret')
+    parser.add_argument('--target', 
+                        help='target machine (aws, vagrant)',
+                        choices=['vagrant', 'aws'], required=True)
+    parser.add_argument('--keyname', 
+                        help='aws keypair name. Will be sotred in .secrets/',
+                        default='keypair')
     args = parser.parse_args()
     do_bootstrap(**vars(args))
 
