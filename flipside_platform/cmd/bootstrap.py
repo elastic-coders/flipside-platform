@@ -7,8 +7,10 @@ from invoke import run
 import flipside_platform.aws
 
 
-def do_bootstrap(target, key_name=None):
+def do_bootstrap(**opts):
     '''Bootstrap the platform on different infrastructure types.'''
+    target = opts.get('target')
+    key_name = opts.get('keyname')
     if target == 'aws':
         # XXX ???
         flipside_platform.aws.bootstrap(key_name=key_name)
@@ -16,18 +18,15 @@ def do_bootstrap(target, key_name=None):
         # flipside_platform.aws.provision()
     elif target == 'vagrant':
         run('vagrant up --provision')
-        print "done"
 
 
 def main():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('target')
-    parser.add_argument('keyname')
+    parser.add_argument('--target', help='target machine (aws, vagrant)')
+    parser.add_argument('--keyname', help='pem file name, must be in ./secret')
     args = parser.parse_args()
-    target = args.target.split("=")
-    key_name = args.keyname.split("=")
-    do_bootstrap(target[1], key_name[1])
+    do_bootstrap(**vars(args))
 
 if __name__ == '__main__':
     main()
