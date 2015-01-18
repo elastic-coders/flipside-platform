@@ -5,6 +5,7 @@ import importlib
 import re
 
 from .. import config
+from .. import utils
 
 
 def do_publish(target, tag='master'):
@@ -28,7 +29,7 @@ def do_publish(target, tag='master'):
             os.makedirs(dst_dir)
         shutil.rmtree(dst_dir)
         shutil.copytree(archive, dst_dir)
-        platform_ssh(ctx, target, [
+        utils.platform_ssh(ctx, target, [
             'cp',
             '-r',
             '/vagrant/.dist/{}'.format(name),
