@@ -9,35 +9,24 @@ from .. import utils
 
 
 def do_publish(target, tag='master'):
-    raise NotImplemented('not tested yet')
+    raise NotImplemented('not tested yet')  # XXX test me
     app_config = config.get_app_config()
     build_dir = config.get_app_build_dir()
     archive_name_in_host = '{name}/{tag}'.format(tag=tag,
                                                  name=app_config['appName'])
-    if target == 'aws':
-        config = config.get_platform_config()
-        cmd = ['rsync', '-avz', '-e',
-               'ssh -l ubuntu -i {}'.format(config['master']['keypair']),
-               build_dir.rstrip('/') + '/',
-               '{}:///srv/salt/dist/{}/'.format(config['master']['ip'],
-                                                archive_name_in_host)]
-        subprocess.check_call(cmd)
-    elif target == 'vagrant':
-        # TODO use rsync
-        dst_dir = '.dist/{}'.format(archive_name_in_host)
-        if not os.path.exists(dst_dir):
-            os.makedirs(dst_dir)
-        shutil.rmtree(dst_dir)
-        shutil.copytree(archive, dst_dir)
-        utils.platform_ssh(ctx, target, [
-            'cp',
-            '-r',
-            '/vagrant/.dist/{}'.format(name),
-            '/srv/salt/dist'])
+    local = build_dir.rstrip('/') + '/'
+    remote = '/srv/salt/dist/{}/'.format(archive_name_in_host)
+    utils.platform_rsync(target, local, remote, direction='up')
 
 
 def main():
-    do_publish()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--target',
+                        help='target machine (aws, vagrant)',
+                        choices=['vagrant', 'aws'], required=True)
+    args = parser.parse_args()
+    do_publish(args.target)
 
 if __name__ == '__main__':
     main()
