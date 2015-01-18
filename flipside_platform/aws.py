@@ -7,7 +7,7 @@ import time
 import json
 import subprocess
 import glob
-from .config import get_platform_config, set_platform_config
+from .config import set_platform_config
 
 logger = logging.getLogger()
 logging.config.dictConfig({'version': 1, 'root': {'level': 'INFO'}})
@@ -124,7 +124,13 @@ def bootstrap(key_name='testk6', group_name='testg'):
 
     public_ip = create_ec2(conn, group_name, key_name)
     config = {
-        'master': {'ip': public_ip, 'keypair': key_path}
+        'master': {
+            'ssh': {
+                'HostName': public_ip,
+                'IdentityFile': key_path,
+                'User': 'ubuntu'
+            }
+        }
     }
     set_platform_config(config)
     conn.close()
