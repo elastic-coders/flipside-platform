@@ -49,54 +49,6 @@ def create_ec2(conn, group_name, keypair_name):
     return addr.public_ip
 
 
-def _sync_salt(host, key_path):
-    for src, dst in [("salt/roots/", "/srv/salt"),
-                     ("salt/pillar/", "/srv/pillar")]:
-        cmd = ['rsync', '-avz',
-               '--exclude', 'dist',
-               '-e', 'ssh -l ubuntu -i {}'.format(key_path),
-               src.rstrip('/') + '/',
-               '{}:///{}/'.format(host, dst)
-           ]
-        subprocess.check_call(cmd)
-
-
-def sync_salt():
-    config = get_platform_config()
-    _sync_salt(config['master']['ip'], config['master']['keypair'])
-
-
-def _provision(host, key_path, salt_version, standalone):
-    # TODO: add standalone mode and salt_version args handling...
-    for dir_ in ('/srv/salt', '/srv/pillar'):
-        subprocess.check_call(
-            'ssh -i {key} ubuntu@{host} sudo bash -c '
-            '"mkdir {dir}; chown ubuntu:ubuntu {dir}"'
-            .format(key=key_path, host=host, dir=dir_).split()
-        )
-    _sync_salt(host, key_path)
-    subprocess.check_call(
-        'scp -i {key} {script} ubuntu@{host}:/tmp/provision.py'.format(
-            key=key_path,
-            host=host,
-            script=os.path.join(os.path.dirname(__file__), 'provision.py')
-        ).split()
-    )
-    subprocess.check_call(
-        'ssh -i {key} ubuntu@{host} sudo /tmp/provision.py --no-standalone'.format(
-            key=key_path,
-            host=host
-        ).split()
-    )
-
-def provision(salt_version=None, standalone=False):
-    config = get_platform_config()
-    _provision(config['master']['ip'], 
-               config['master']['keypair'],
-               salt_version,
-               standalone)
-
-
 def bootstrap(key_name='testk6', group_name='testg'):
     # TODO: review default value for key_group and key_name
     access_key = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -134,5 +86,3 @@ def bootstrap(key_name='testk6', group_name='testg'):
     }
     set_platform_config(config)
     conn.close()
-    # do this in separate command
-    # provision()
