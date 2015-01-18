@@ -1,1 +1,4 @@
 name: django site
+extra_context:
+  server_name: the website hostname
+  package_name: the python package name
