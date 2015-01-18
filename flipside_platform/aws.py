@@ -66,7 +66,7 @@ def sync_salt():
     _sync_salt(config['master']['ip'], config['master']['keypair'])
 
 
-def _provision(host, key_path):
+def _provision(host, key_path, salt_version, standalone):
     # TODO: add standalone mode arg
     for dir_ in ('/srv/salt', '/srv/pillar'):
         subprocess.check_call(
@@ -90,9 +90,15 @@ def _provision(host, key_path):
     )
 
 
-def provision():
+def provision(salt_version=None, standalone=False):
+    print "%s %s" % (salt_version, standalone)
+    '''
     config = get_platform_config()
-    _provision(config['master']['ip'], config['master']['keypair'])
+    _provision(config['master']['ip'], 
+               config['master']['keypair'],
+               salt_version,
+               standalone)
+    '''
 
 
 def bootstrap(key_name='testk6', group_name='testg'):
