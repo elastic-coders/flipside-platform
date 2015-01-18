@@ -46,21 +46,25 @@ To bootstrap a master machine:
 
     flipside-bootstrap --target=[aws|vagrant] --keyname=<keyname>
 
-    **keyname = pem file name, will be stored into .secret/ folder under project root**
-
-With aws target this command bootstrap an aws machine, creating a configuration file in the project root folder ".flipside-config.json" containing some info on aws bootstrapped machine
+When target is aws:
+- the newly created key is stored under `.secrets` dir
+- the master configuration is stored in `.flipside-platform.yaml`
 
 
 ### Provision
 
-XXX TODO
-
 Installs salt and ancillary packages in the master machine
 
-    flipside-provision --target=[aws|vagrant] --salt-version --standalone
+    flipside-provision --target=[aws|vagrant] --salt-version --no-standalone
+
+Salt version defaults to `stable`
+
+Standalone mode can be set using the `--standalone` option
 
 
 ### Configure
+
+XXX TODO
 
 Push salt states and pillars into the master
 
@@ -68,6 +72,8 @@ Push salt states and pillars into the master
 
 
 ### Deploy
+
+XXX TODO
 
 Deploy an application
 
