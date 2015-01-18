@@ -7,32 +7,40 @@
 2. install flipside-platform
 
 
-## Init
+
+## Synopsis of all commands
+
+### Template
 
 See all available templates
 
     flipside-template list
 
-Configures the flipside app
+
+### Init
+
+Initializes the flipside app
 
     flipside-init <app_name> <template_name>
 
+Writes config into `.flipside`
 
-## Build
+
+### Build
 
 To build locally:
 
     flipside-build
 
 
-## Publish
+### Publish
 
 Uploads the app into the master:
 
     flipside-publish --target=[aws|vagrant]
 
 
-## Bootstrap
+### Bootstrap
 
 To bootstrap a master machine:
 
@@ -43,7 +51,7 @@ To bootstrap a master machine:
 With aws target this command bootstrap an aws machine, creating a configuration file in the project root folder ".flipside-config.json" containing some info on aws bootstrapped machine
 
 
-## Provision
+### Provision
 
 XXX TODO
 
@@ -52,20 +60,20 @@ Installs salt and ancillary packages in the master machine
     flipside-provision --target=[aws|vagrant] --salt-version --standalone
 
 
-## Configure
+### Configure
 
 Push salt states and pillars into the master
 
     flipside-configure --target=[aws|vagrant]
 
 
-## Deploy
+### Deploy
 
 Deploy an application
 
     flipside-deploy --target=[aws|vagrant]
 
 
-## SSH access
+### SSH access
 
     flipside-ssh --target=[aws|vagrant]
