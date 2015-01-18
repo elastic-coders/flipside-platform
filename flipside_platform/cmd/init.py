@@ -2,6 +2,7 @@
 flipside init
 '''
 import os
+import shutil
 
 import yaml
 
@@ -61,10 +62,19 @@ def _write_saltstack(app_name, app_template, force=False):
         _render_to_file(tpl, dst_path, context=ctx, force=force)
 
 
+def _write_vagrantfile(force=False):
+    src_path = config.get_flipside_vagrantfile()
+    dst_path = config.get_app_vagrantfile()
+    if not force and os.path.exists(dst_path):
+        raise ValueError('Vagrantfile exists: can\'t overwrite')
+    shutil.copyfile(src_path, dst_path)
+
+
 def do_init(app_name, app_template, force=False, extra_context=None):
     _set_extra_context(extra_context)
     _write_flipfile(app_name, app_template, force=force)
     _write_saltstack(app_name, app_template, force=force)
+    _write_vagrantfile(force=force)
 
 
 def main():
