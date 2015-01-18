@@ -66,8 +66,8 @@ def sync_salt():
     _sync_salt(config['master']['ip'], config['master']['keypair'])
 
 
-def _provision(host, key_path):
-    # TODO: add standalone mode arg
+def _provision(host, key_path, salt_version, standalone):
+    # TODO: add standalone mode and salt_version args handling...
     for dir_ in ('/srv/salt', '/srv/pillar'):
         subprocess.check_call(
             'ssh -i {key} ubuntu@{host} sudo bash -c '
@@ -89,10 +89,12 @@ def _provision(host, key_path):
         ).split()
     )
 
-
-def provision():
+def provision(salt_version=None, standalone=False):
     config = get_platform_config()
-    _provision(config['master']['ip'], config['master']['keypair'])
+    _provision(config['master']['ip'], 
+               config['master']['keypair'],
+               salt_version,
+               standalone)
 
 
 def bootstrap(key_name='testk6', group_name='testg'):

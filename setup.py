@@ -15,8 +15,7 @@ setup(
         'console_scripts': [
             'flipside-{name} = flipside_platform.cmd.{name}:main'.format(name=name)
             for name in ('init', 'template', 'build', 'bootstrap', 'ssh',
-                         'configure', 'publish', 'deploy')
-
+                         'provision', 'configure', 'publish', 'deploy')
         ]
     }
 )
