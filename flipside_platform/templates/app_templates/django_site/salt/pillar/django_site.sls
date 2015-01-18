@@ -1,10 +1,13 @@
-{% set app_name = "{{ app_name }}"  %}
-{% set home = "/home/{{ app_name }}" %}
-{% set uwsgi_socket = home ~ "/uwsgi/control/uwsgi.sock" %}
-{% set server_name = "www.elastic-coders.com" %}
-{% set package_name = "elastic-website" %}
+# Configurable section
+{%- for param, value in extra.items() %}
+{{ '{% set ' ~  param ~ ' = "' ~ value ~ '" -%}' }}
+{%- endfor %}
+# END configurable section
 
 {% raw -%}
+{% set home = "/home/{{ app_name }}" %}
+{% set uwsgi_socket = home ~ "/uwsgi/control/uwsgi.sock" %}
+
 nginx:
   ng:
     server:

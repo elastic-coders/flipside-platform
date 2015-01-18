@@ -20,11 +20,11 @@ def do_build(**opts):
     fun = getattr(module, fun)
 
     # XXX salt config (unused for now)
-    if os.path.exists(config.get_salt_path()):
+    if os.path.exists(config.get_app_salt_path()):
         salt_dst_dir = os.path.join(build_dir,
-                                    os.path.basename(config.get_salt_path()))
+                                    os.path.basename(config.get_app_salt_path()))
         shutil.rmtree(salt_dst_dir, ignore_errors=True)
-        shutil.copytree(config.get_salt_path(), salt_dst_dir)
+        shutil.copytree(config.get_app_salt_path(), salt_dst_dir)
     opts.update(build.get('function_kwargs', {}))
     fun(build_dir, **opts)
 
