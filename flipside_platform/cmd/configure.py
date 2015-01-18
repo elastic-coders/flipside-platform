@@ -19,8 +19,17 @@ from .. import utils
 
 
 def do_configure(target):
-    raise NotImplemented('not tested yet')  # XXX test me
+    raise NotImplemented('not yet tested')  # test me
     src_path = config.get_app_salt_path()
+    # Old command:
+    # for src, dst in [("salt/roots/", "/srv/salt"),
+    #                  ("salt/pillar/", "/srv/pillar")]:
+    #     cmd = ['rsync', '-avz',
+    #            '--exclude', 'dist',
+    #            '-e', 'ssh -l ubuntu -i {}'.format(key_path),
+    #            src.rstrip('/') + '/',
+    #            '{}:///{}/'.format(host, dst)
+    #        ]
     transfers = [
         (os.path.join(src_path, 'state'), '/srv/salt/'),
         (os.path.join(src_path, 'pillar'), '/srv/pillar/'),
