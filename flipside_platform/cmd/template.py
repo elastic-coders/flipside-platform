@@ -12,7 +12,9 @@ def do_list():
     path = config.get_flipside_app_templates_base_dir()
     for meta in glob.glob(os.path.join(path, '*/meta.yaml')):
         with open(meta, 'rb') as f:
-            print(u'{}: {}'.format(os.path.dirname(meta), yaml.load(f)))
+            print(u'{}: {}'.format(
+                os.path.basename(os.path.dirname(meta)),
+                yaml.load(f)))
 
 
 def main():
