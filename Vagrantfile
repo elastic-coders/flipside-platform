@@ -9,11 +9,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.network "forwarded_port", guest: 80, host: 8090
 
-  config.vm.synced_folder "salt/roots/", "/srv/salt/"
-  config.vm.synced_folder "salt/pillar/", "/srv/pillar/"
-
-
-  # config.vm.provision "shell", path: "flipside_platform/provision.py", args: ["--salt-version", "git v2014.7.0", '--no-standalone']
+  config.vm.synced_folder ".flipside/salt/state/", "/srv/salt/"
+  config.vm.synced_folder ".flipside/salt/pillar/", "/srv/pillar/"
 
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--memory", "1024"]
