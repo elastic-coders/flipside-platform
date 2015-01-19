@@ -79,6 +79,10 @@ def get_app_salt_path():
     return os.path.join(get_app_flipside_path(), 'salt')
 
 
+def get_app_salt_config_path():
+    return os.path.join(get_app_salt_path(), 'config.yaml')
+
+
 def get_app_template_path(template_name):
     return os.path.join(get_flipside_app_templates_base_dir(), template_name)
 
@@ -115,3 +119,10 @@ def get_app_build_dir():
 def get_app_download_dir():
     '''Cache downloaded files here'''
     return os.path.join(get_app_path(), '.flipside-download')
+
+
+def is_platform_standalone():
+    try:
+        return get_platform_config()['master'].get('standalone', False)
+    except KeyError:
+        return False

@@ -5,12 +5,15 @@ flipside-provision command
 from invoke import run
 
 from .. import provision
+from .. import config
 
 
 def do_provision(target, salt_version, standalone):
     ''' Installs salt and ancillary packages in the master machine
     '''
     provision.upload_and_excecute_myself(target, salt_version, standalone)
+    config.set_platform_config({'master': {'standalone': standalone}},
+                               merge=True)
 
 
 def main():
