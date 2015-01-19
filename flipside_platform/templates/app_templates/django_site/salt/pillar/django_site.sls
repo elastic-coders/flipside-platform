@@ -5,7 +5,7 @@
 # END configurable section
 
 {% raw -%}
-{% set home = "/home/{{ app_name }}" %}
+{% set home = "/home/" ~ app_name %}
 {% set uwsgi_socket = home ~ "/uwsgi/control/uwsgi.sock" %}
 
 nginx:
