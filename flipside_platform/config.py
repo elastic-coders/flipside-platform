@@ -1,17 +1,18 @@
 import os
-import json
+import re
+import subprocess
+
 import jinja2
 import yaml
 
 
-CONFIG_FILE = '.flipside-config.json'
-
-
 def get_platform_config():
-    if not os.path.isfile(CONFIG_FILE):
-        return {}
-    with open(CONFIG_FILE, 'r+') as f:
-        return json.load(f)
+    fname = get_app_platform_config_path()
+    if not os.path.isfile(fname):
+        raise ValueError('platform config file {} not found'.format(fname))
+    with open(fname, 'r') as f:
+        return yaml.load(f)
+
 
 def set_platform_config(config, merge=True):
     if merge:
@@ -19,8 +20,36 @@ def set_platform_config(config, merge=True):
         default.update(config)
     else:
         default = config
-    with open(CONFIG_FILE, 'w') as f:
-        f.write(json.dumps(default))
+    with open(get_app_platform_config_path(), 'wb') as f:
+        f.write(yaml.dump(default).encode())
+
+
+def get_master_ssh_params(target):
+    if target == 'vagrant':
+        # TODO: cache this
+        ssh_cfg_out = subprocess.check_output(['vagrant', 'ssh-config']).decode()
+        params = {'UserKnownHostsFile': '/dev/null',
+                  'StrictHostKeyChecking': 'no'}
+        for param in ('IdentityFile', 'Port', 'HostName', 'User'):
+            mo = re.search(r'^[ ]+{} (.*)$'.format(param), ssh_cfg_out,
+                           re.MULTILINE)
+            if not mo:
+                raise ValueError('bad vagrant ssh config')
+            params[param] = mo.group(1)
+    elif target == 'aws':
+        platform = get_platform_config()
+        return platform['master']['ssh']
+    return params
+
+
+def get_app_platform_config_path():
+    return os.path.join(get_app_path(), '.flipside-platform.yaml')
+
+
+
+def get_flipside_base_dir():
+    '''Base dir of the installed flipside package'''
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 
 def get_flipside_templates_base_dir():

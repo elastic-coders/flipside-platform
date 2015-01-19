@@ -19,31 +19,28 @@ from .. import utils
 
 
 def do_configure(target):
-    raise NotImplemented('not tested yet')
-    app_config = config.get_app_config()
+    raise NotImplemented('not yet tested')  # test me
     src_path = config.get_app_salt_path()
+    # Old command:
+    # for src, dst in [("salt/roots/", "/srv/salt"),
+    #                  ("salt/pillar/", "/srv/pillar")]:
+    #     cmd = ['rsync', '-avz',
+    #            '--exclude', 'dist',
+    #            '-e', 'ssh -l ubuntu -i {}'.format(key_path),
+    #            src.rstrip('/') + '/',
+    #            '{}:///{}/'.format(host, dst)
+    #        ]
     transfers = [
         (os.path.join(src_path, 'state'), '/srv/salt/'),
         (os.path.join(src_path, 'pillar'), '/srv/pillar/'),
     ]
     for src, dst in transfers:
-        if target == 'aws':
-            config_ = config.get_platform_config()
-            cmd = ['rsync', '-avz', '-e',
-                   'ssh -l ubuntu -i {}'.format(_config['master']['keypair']),
-                   build_dir.rstrip('/') + '/',
-                   '{}://{}'.format(_config['master']['ip'], dst)]
-            subprocess.check_call(cmd)
-        elif target == 'vagrant':
-            # TODO use rsync
-            dst_dir = os.path.join('.dist', os.path.relpath(dst, '/'))
-            if not os.path.exists(dst_dir):
-                os.makedirs(dst_dir)
-            shutil.rmtree(dst_dir)
-            shutil.copytree(src, dst_dir)
-            cmd = 'cp -r {} {}'.format(os.path.join('/vagrant', dst_dir),
-                                       dst)
-            utils.platform_ssh(target, [cmd])
+        utils.platform_rsync(
+            target,
+            local=src,
+            remote=dst,
+            direction='up'
+        )
     # TODO: refresh pillar
 
 

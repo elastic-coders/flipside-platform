@@ -4,36 +4,27 @@ flipside-provision command
 '''
 from invoke import run
 
-import flipside_platform.aws
+from .. import provision
 
 
-def do_provision(**opts):
+def do_provision(target, salt_version, standalone):
     ''' Installs salt and ancillary packages in the master machine
-    
-    flipside-provision --target=[aws|vagrant] --salt-version --standalone
     '''
-    target = opts.get('target')
-    # not yet implemented salt version and standlone parameters handling!!
-    salt_version = opts.get('salt-version')
-    standalone = opts.get('standalone')
-    if target == 'aws':
-        flipside_platform.aws.provision(
-            salt_version=salt_version, 
-            standalone=standalone
-        )
-    elif target == 'vagrant':
-        run('vagrant up --provision')
+    provision.upload_and_excecute_myself(target, salt_version, standalone)
+
 
 def main():
+    # XXX this argument parsing is the same in flipside_platorm/provision.py
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--target', 
+    parser.add_argument('--target',
                         help='target machine (aws, vagrant)',
                         choices=['vagrant', 'aws'], required=True)
-    parser.add_argument('--salt-version', 
-                        help='salt version for provisioning')
-    parser.add_argument('--standalone', action='store_true', 
-                        help='use standalone....')
+    parser.add_argument('--salt-version',
+                        help='salt version for provisioning',
+                        default='stable')
+    parser.add_argument('--standalone', action='store_true',
+                        help='use salt in standalone mode (no daemons)')
     args = parser.parse_args()
     do_provision(**vars(args))
 

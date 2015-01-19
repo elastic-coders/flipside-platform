@@ -2,7 +2,7 @@
 flipside-bootstrap command
 
 '''
-from invoke import run
+import subprocess
 
 import flipside_platform.aws
 
@@ -12,20 +12,18 @@ def do_bootstrap(**opts):
     target = opts.get('target')
     key_name = opts.get('keyname')
     if target == 'aws':
-        # XXX ???
         flipside_platform.aws.bootstrap(key_name=key_name)
-        # provision will be done later....
-        # flipside_platform.aws.provision()
     elif target == 'vagrant':
-        run('vagrant up --provision')
+        subprocess.check_call(['vagrant', 'up', '--no-provision'])
+
 
 def main():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--target', 
+    parser.add_argument('--target',
                         help='target machine (aws, vagrant)',
                         choices=['vagrant', 'aws'], required=True)
-    parser.add_argument('--keyname', 
+    parser.add_argument('--keyname',
                         help='aws keypair name. Will be sotred in .secrets/',
                         default='keypair')
     args = parser.parse_args()
