@@ -44,13 +44,15 @@ def setup_salt(standalone):
     if not os.path.exists('/etc/salt/minion.d'):
         os.mkdir('/etc/salt/minion.d')
     if not os.path.exists('/srv/salt/dist'):
-        os.mkdir('/srv/salt/dist')
+        os.makedirs('/srv/salt/dist')
+    if not os.path.exists('/srv/pillar'):
+        os.makedirs('/srv/pillar')
     sudo_user = os.environ.get('SUDO_USER')
     if sudo_user:
         subprocess.check_call(
-            'sudo chown {} /srv/salt /srv/pillar'.format(sudo_user)
+            ['sudo', 'chown', sudo_user, '/srv/salt', '/srv/pillar']
         )
-    filserver_config = 'fileserver_backend:\n  - roots\n  - git\n'
+    fileserver_config = 'fileserver_backend:\n  - roots\n  - git\n'
     if standalone:
         with open('/etc/salt/minion.d/local.config', 'w+') as f:
             f.write('file_client:\n  local\n')
@@ -83,12 +85,6 @@ def test_salt(standalone):
         raise SystemExit('ERROR')
 
 
-def main(standalone=True, salt_version=None):
-    install_salt(standalone, salt_version)
-    setup_salt(standalone)
-    test_salt(standalone)
-
-
 def upload_and_excecute_myself(target, salt_version, standalone):
     from flipside_platform import utils
     remote_dst_dir = '/tmp'  # XXX
@@ -103,6 +99,12 @@ def upload_and_excecute_myself(target, salt_version, standalone):
              '--{}standalone'.format('' if standalone else 'no-')],
         execlp=True
     )
+
+
+def main(standalone=True, salt_version=None):
+    install_salt(standalone, salt_version)
+    setup_salt(standalone)
+    test_salt(standalone)
 
 
 if __name__ == '__main__':
