@@ -2,4 +2,3 @@ recursive-include flipside_platform/templates *.*
 include requirements.txt
 include requirements-dev.txt
 include README.md
-include Vagrantfile
