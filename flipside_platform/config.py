@@ -115,11 +115,3 @@ def get_app_build_dir():
 def get_app_download_dir():
     '''Cache downloaded files here'''
     return os.path.join(get_app_path(), '.flipside-download')
-
-
-def get_flipside_vagrantfile():
-    return os.path.join(get_flipside_base_dir(), 'Vagrantfile')
-
-
-def get_app_vagrantfile():
-    return os.path.join(get_app_path(), 'Vagrantfile')
