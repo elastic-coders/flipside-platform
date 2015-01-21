@@ -50,7 +50,7 @@ def setup_salt(standalone):
     sudo_user = os.environ.get('SUDO_USER')
     if sudo_user:
         subprocess.check_call(
-            ['sudo', 'chown', sudo_user, '/srv/salt', '/srv/pillar']
+            ['sudo', 'chown', '-R', sudo_user, '/srv/salt', '/srv/pillar']
         )
     fileserver_config = 'fileserver_backend:\n  - roots\n  - git\n'
     if standalone:
