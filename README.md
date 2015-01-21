@@ -64,21 +64,21 @@ Standalone mode can be set using the `--standalone` option
 
 ### Configure
 
-XXX TODO
-
 Push salt states and pillars into the master
 
     flipside-configure --target=[aws|vagrant]
 
+**KNOWN ISSUES**: there is a single pillar and state topfile shared between
+all apps. Every configure overwrites it so make sure you share the topfile
+between all apps of the same platform.
 
 ### Deploy
-
-XXX TODO
 
 Deploy an application
 
     flipside-deploy --target=[aws|vagrant]
 
+**KNOWN ISSUES**: deploys all apps together
 
 ### SSH access
 
