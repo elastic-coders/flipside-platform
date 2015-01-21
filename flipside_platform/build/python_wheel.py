@@ -10,14 +10,18 @@ import shutil
 from .. import config
 
 
+def get_package_name():
+    return subprocess.check_output(
+        [sys.executable, 'setup.py', '--name']
+    )
+
+
 def build(dist_dir, deps=True, py_version=2, ucs=4, **opts):
     try:
         import wheel
     except ImportError:
         raise ValueError('please install wheel')
-    package_name = subprocess.check_output(
-        [sys.executable, 'setup.py', '--name']
-    )
+    package_name = get_package_name()
     if not os.path.exists(dist_dir):
         os.mkdir(dist_dir)
     # XXX we are creating a new dir out of the blue
@@ -39,16 +43,3 @@ def build(dist_dir, deps=True, py_version=2, ucs=4, **opts):
                 shutil.copy(os.path.join(download_dir, down),
                             os.path.join(wheelhouse, down.split('%2F')[-1]))
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--find-links', wheelhouse, '--use-wheel', package_name])
-
-
-def build_django(dist_dir, **kwargs):
-    import importlib
-    settings_module = kwargs.pop('settings_module', None) or 'settings'
-    build(dist_dir, **kwargs)
-    # staticfiles
-    frontend_dist_dir = '{}/frontend'.format(dist_dir)
-    settings = importlib.import_module(settings_module)
-    os.mkdir(frontend_dist_dir)
-    for _, src_path in settings.STATICFILES_DIRS:
-        shutil.copytree(src_path, os.path.join(frontend_dist_dir,
-                                               os.path.basename(src_path)))
