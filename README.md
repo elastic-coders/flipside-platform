@@ -69,10 +69,17 @@ Push salt states and pillars into the master
     flipside-configure --target=[aws|vagrant]
 
 **KNOWN ISSUES**:
-- there is a single pillar and state topfile shared between
-all apps. Every configure overwrites it so make sure you share the topfile
-between all apps of the same platform.
-- multiple app instances of the same templates are not supported on a single
+
+The following salt config files are global and shared between all apps:
+- `.flipside/salt/config.yaml`
+- `.flipside/salt/state/top.sls`
+- `.flipside/salt/pillar/top.sls`
+
+Every `flipside-configure` overwrites what was written by the previous one. To
+overcome this issue, just make sure all apps in a single master have the same
+files
+
+Multiple app instances of the same templates are not supported on a single
  master. Fixing this is trivial: app put their state files in separate paths and app pillars and other config have to be prefixed by {{ app_name }}
 
 
