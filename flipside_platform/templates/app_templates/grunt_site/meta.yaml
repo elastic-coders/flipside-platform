@@ -1,1 +1,3 @@
 name: grunt site
+extra_context:
+  server_name: the website hostname
