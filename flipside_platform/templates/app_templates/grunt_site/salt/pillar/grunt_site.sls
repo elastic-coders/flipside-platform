@@ -6,6 +6,7 @@
 
 {% raw -%}
 {% set home = "/home/" ~ app_name %}
+{% set root_dir = home ~ "/static"  %}
 
 nginx:
   ng:
@@ -31,16 +32,20 @@ nginx:
               - listen:
                 - 80
               - location /:
-                - location ~ ^/favicon\.(ico|png)$:
-                  - rewrite: (.*) /static/images$1
-                - location ~ ^/robots\.txt$:
-                  - rewrite: (.*) /static$1
-                - location /static:
-                  - alias: {{ home }}/static
+                - root: {{ root_dir }}
+                - index: index.html
+                - expires: -1
 
 users:
   {{ app_name }}:
     fullname: {{ app_name }}
     homedir: {{ home }}
     createhome: True
+
+# XXX this only works for a single app!!!
+grunt_site:
+  app_name: {{ app_name }}
+  root_dir: {{ root_dir }}
+  home_dir: {{ home }}
+
 {%- endraw %}
