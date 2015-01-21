@@ -8,10 +8,12 @@ include:
 {% set root_dir = pillar['grunt_site'].root_dir %}
 {% set home_dir = pillar['grunt_site'].home_dir %}
 
+# XXX not sure this is sane
 remove-nginx-default-{{ app_name }}:
   file.absent:
     - name: /etc/nginx/sites-enabled/default
 
+# XXX not sure this is sane
 nginx-reload-{{ app_name }}:
   service.running:
     - name: nginx
