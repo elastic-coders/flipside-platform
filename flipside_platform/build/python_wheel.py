@@ -6,6 +6,7 @@ import os
 import subprocess
 import pkg_resources
 import shutil
+import glob
 
 from .. import config
 
@@ -16,7 +17,7 @@ def get_package_name():
     )
 
 
-def build(dist_dir, deps=True, py_version=2, ucs=4, **opts):
+def build(dist_dir, deps=True, use_requirements=False, py_version=2, ucs=4, **opts):
     try:
         import wheel
     except ImportError:
@@ -36,10 +37,10 @@ def build(dist_dir, deps=True, py_version=2, ucs=4, **opts):
             assert sys.version_info[0] == py_version, 'Use python {} for this please'.format(py_version)
         if ucs is not None:
             assert ((sys.maxunicode >= 1114111) if ucs == 4 else (sys.maxunicode < 111411)), 'Use a UCS-{} python build please'.format(ucs)
-
-        subprocess.check_call([sys.executable, '-m', 'pip', 'wheel', '--wheel-dir', wheelhouse, '--find-links', wheelhouse, '--download-cache', download_dir, '--use-wheel', package_name])
-        for down in os.listdir(download_dir):
-            if down.endswith('.whl'):
-                shutil.copy(os.path.join(download_dir, down),
-                            os.path.join(wheelhouse, down.split('%2F')[-1]))
+        if use_requirements:
+            subprocess.check_call([sys.executable, '-m', 'pip', 'wheel', '--wheel-dir', wheelhouse, '--use-wheel', '-r', 'requirements.txt'])
+            for fname in glob.glob('requirements*.txt'):
+                shutil.copy(fname, dist_dir)
+        else:
+            subprocess.check_call([sys.executable, '-m', 'pip', 'wheel', '--wheel-dir', wheelhouse, '--find-links', wheelhouse, '--use-wheel', package_name])
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--find-links', wheelhouse, '--use-wheel', package_name])
