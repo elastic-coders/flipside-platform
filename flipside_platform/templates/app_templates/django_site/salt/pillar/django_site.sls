@@ -6,7 +6,7 @@
 
 {% raw -%}
 {% set home = "/home/" ~ app_name %}
-{% set uwsgi_socket = home ~ "/uwsgi/control/uwsgi.sock" %}
+{% set uwsgi_socket = home ~ "/uwsgi.sock" %}
 
 nginx:
   ng:
