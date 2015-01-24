@@ -13,6 +13,9 @@ import importlib
 import re
 import os
 import shutil
+import logging
+import subprocess
+import time
 
 from .. import config
 from .. import utils
@@ -55,6 +58,20 @@ def do_configure(target, do_config=False):
                 target,
                 args=['sudo', 'service', 'salt-master', 'restart']
             )
+            for i in range(5):
+                try:
+                    utils.platform_ssh(
+                        target,
+                        args=['sudo', 'salt', '-l', 'quiet', '\*', 'test.ping']
+                    )
+                except subprocess.CalledProcessError:
+                    logging.warning('retrying to connect to minions. Sleeping')
+                    time.sleep(1)
+                    pass
+                else:
+                    break
+            else:
+                logging.error('Could not reach minions after restart')
 
     # TODO: refresh pillar
 
