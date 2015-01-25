@@ -94,9 +94,9 @@ def upload_and_excecute_myself(target, salt_version, standalone):
                        direction='up')
     utils.platform_ssh(
         target,
-        args=['sudo', remote_path,
-             '--salt-version', salt_version,
-             '--{}standalone'.format('' if standalone else 'no-')],
+        args=['sudo', remote_path, '--salt-version',
+              salt_version.replace(' ', '\\ '),  # Poor-man's bash quoting...
+              '--{}standalone'.format('' if standalone else 'no-')],
         execlp=True
     )
 
