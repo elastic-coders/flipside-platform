@@ -55,11 +55,11 @@ When target is aws:
 
 Installs salt and ancillary packages in the master machine
 
-    flipside-provision --target=[aws|vagrant] --salt-version --no-standalone
+    flipside-provision --target=[aws|vagrant]
 
-Salt version defaults to `stable`
+Salt version defaults to `stable latest`
 
-Standalone mode can be set using the `--standalone` option
+Standalone (masterless) mode can be set using the `--standalone` option
 
 
 ### Configure
