@@ -91,11 +91,15 @@ def upload_and_excecute_myself(target, salt_version, standalone):
     remote_path = os.path.join(remote_dst_dir, os.path.basename(local_path))
     utils.platform_scp(target, local=local_path, remote=remote_path,
                        direction='up')
+    args = [
+        'sudo', remote_path, '--salt-version',
+        salt_version.replace(' ', '\\ '),  # Poor-man's bash quoting...
+    ]
+    if standalone:
+        args.append('--standalone')
     utils.platform_ssh(
         target,
-        args=['sudo', remote_path, '--salt-version',
-              salt_version.replace(' ', '\\ '),  # Poor-man's bash quoting...
-              '--{}standalone'.format('' if standalone else 'no-')],
+        args=args,
         execlp=True
     )
 
@@ -110,7 +114,7 @@ if __name__ == '__main__':
     # XXX same args in flipside_platform/cmd/provision.py
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--no-standalone', action='store_true')
+    parser.add_argument('--standalone', action='store_true')
     parser.add_argument('--salt-version', default='stable latest')
     args = parser.parse_args()
-    main(standalone=not args.no_standalone, salt_version=args.salt_version)
+    main(standalone=args.standalone, salt_version=args.salt_version)
