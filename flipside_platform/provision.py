@@ -16,7 +16,7 @@ import tempfile
 import os
 
 
-def install_salt(standalone, version='stable'):
+def install_salt(standalone, version='stable latest'):
     '''Install Salt on the local machine'''
     resp = urlopen('https://bootstrap.saltstack.com')
     assert resp.status == 200
@@ -111,6 +111,6 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--no-standalone', action='store_true')
-    parser.add_argument('--salt-version', default='stable')
+    parser.add_argument('--salt-version', default='stable latest')
     args = parser.parse_args()
     main(standalone=not args.no_standalone, salt_version=args.salt_version)
