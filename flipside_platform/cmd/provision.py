@@ -26,6 +26,7 @@ def main():
     parser.add_argument('--salt-version',
                         help='salt version for provisioning',
                         default='stable')
+    # TODO: maybe get standalone setting from flipside-platform.yaml ...
     parser.add_argument('--standalone', action='store_true',
                         help='use salt in standalone mode (no daemons)')
     args = parser.parse_args()

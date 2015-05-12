@@ -16,7 +16,7 @@ import tempfile
 import os
 
 
-def install_salt(standalone, version='stable'):
+def install_salt(standalone, version='stable latest'):
     '''Install Salt on the local machine'''
     resp = urlopen('https://bootstrap.saltstack.com')
     assert resp.status == 200
@@ -54,8 +54,7 @@ def setup_salt(standalone):
         )
     fileserver_config = 'fileserver_backend:\n  - roots\n  - git\n'
     if standalone:
-        with open('/etc/salt/minion.d/local.config', 'w+') as f:
-            f.write('file_client:\n  local\n')
+        fileserver_config += '\nfile_client:\n  local\n'
         with open('/etc/salt/minion.d/10-flipside.conf', 'w+') as f:
             f.write(fileserver_config)
     else:
@@ -79,7 +78,7 @@ def test_salt(standalone):
             )
         except subprocess.CalledProcessError:
             pass
-    if ping.get('local'):
+    if isinstance(ping, dict) and ping.get('local'):
         print('OK')
     else:
         raise SystemExit('ERROR')
@@ -92,11 +91,15 @@ def upload_and_excecute_myself(target, salt_version, standalone):
     remote_path = os.path.join(remote_dst_dir, os.path.basename(local_path))
     utils.platform_scp(target, local=local_path, remote=remote_path,
                        direction='up')
+    args = [
+        'sudo', remote_path, '--salt-version',
+        salt_version.replace(' ', '\\ '),  # Poor-man's bash quoting...
+    ]
+    if standalone:
+        args.append('--standalone')
     utils.platform_ssh(
         target,
-        args=['sudo', remote_path, '--salt-version',
-              salt_version.replace(' ', '\\ '),  # Poor-man's bash quoting...
-              '--{}standalone'.format('' if standalone else 'no-')],
+        args=args,
         execlp=True
     )
 
@@ -111,7 +114,7 @@ if __name__ == '__main__':
     # XXX same args in flipside_platform/cmd/provision.py
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--no-standalone', action='store_true')
-    parser.add_argument('--salt-version', default='stable')
+    parser.add_argument('--standalone', action='store_true')
+    parser.add_argument('--salt-version', default='stable latest')
     args = parser.parse_args()
-    main(standalone=not args.no_standalone, salt_version=args.salt_version)
+    main(standalone=args.standalone, salt_version=args.salt_version)
