@@ -54,8 +54,7 @@ def setup_salt(standalone):
         )
     fileserver_config = 'fileserver_backend:\n  - roots\n  - git\n'
     if standalone:
-        with open('/etc/salt/minion.d/local.config', 'w+') as f:
-            f.write('file_client:\n  local\n')
+        fileserver_config += '\nfile_client:\n  local\n'
         with open('/etc/salt/minion.d/10-flipside.conf', 'w+') as f:
             f.write(fileserver_config)
     else:
