@@ -78,7 +78,7 @@ def test_salt(standalone):
             )
         except subprocess.CalledProcessError:
             pass
-    if ping.get('local'):
+    if isinstance(ping, dict) and ping.get('local'):
         print('OK')
     else:
         raise SystemExit('ERROR')
