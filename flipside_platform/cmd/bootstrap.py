@@ -3,8 +3,10 @@ flipside-bootstrap command
 
 '''
 import subprocess
+import os
 
-import flipside_platform.aws
+from .. import aws
+from .. import config
 
 
 def do_bootstrap(**opts):
@@ -12,8 +14,15 @@ def do_bootstrap(**opts):
     target = opts.get('target')
     key_name = opts.get('keyname')
     if target == 'aws':
-        flipside_platform.aws.bootstrap(key_name=key_name)
+        aws.bootstrap(key_name=key_name)
     elif target == 'vagrant':
+        path = 'Vagrantfile'
+        if not os.path.exists(path):
+            print('creating {}'.format(path))
+            env = config.get_jinja_environment()
+            content = env.get_template('Vagrantfile.jinja').render().encode('utf8')
+            with open(path, 'wb+') as f:
+                f.write(content)
         subprocess.check_call(['vagrant', 'up', '--no-provision'])
 
 
