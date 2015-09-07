@@ -1,3 +1,0 @@
-base:
-  '*':
-    - grunt_site

@@ -7,7 +7,6 @@
 2. install flipside-platform
 
 
-
 ## Synopsis of all commands
 
 ### Template
@@ -23,7 +22,7 @@ Initializes the flipside app
 
     flipside-init <app_name> <template_name>
 
-Writes config into `.flipside`
+Writes config into `.flipside/`
 
 
 ### Build
