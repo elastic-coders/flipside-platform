@@ -4,13 +4,10 @@ import getpass
 import logging
 import os
 import time
-import json
-import subprocess
-import glob
-from .config import set_platform_config
 
-logger = logging.getLogger()
-logging.config.dictConfig({'version': 1, 'root': {'level': 'INFO'}})
+from . import config
+
+logger = logging.getLogger(__name__)
 
 
 def create_security_group(conn, name):
@@ -49,25 +46,25 @@ def create_ec2(conn, group_name, keypair_name):
     return addr.public_ip
 
 
-def bootstrap(key_name='testk6', group_name='testg'):
-    # TODO: review default value for key_group and key_name
-    access_key = os.environ.get('AWS_ACCESS_KEY_ID')
-    if not access_key:
-        access_key = raw_input('AWS access key: ')
-    secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    if not secret_key:
-        secret_key = getpass.getpass('AWS secret key: ')
-    conn = boto.ec2.connect_to_region('eu-west-1',
-                                      aws_access_key_id=access_key,
-                                      aws_secret_access_key=secret_key)
+def bootstrap(key_name=None, group_name=None, askpass=False):
+    opts = {}
+    if askpass:
+        opts['aws_access_key_id'] = raw_input('AWS access key: ')
+        opts['aws_secret_access_key'] = getpass.getpass('AWS secret key: ')
+    conn = boto.ec2.connect_to_region('eu-west-1', **opts)
 
+    group_name = group_name or 'grp_{}'.format(config.get_app_name())
+    key_name = key_name or 'key_{}'.format(config.get_app_name())
     group = create_security_group(conn, group_name)
-    key_path = os.path.join('.secrets', '{}.pem'.format(key_name))
+    secrets_dir = config.get_secrets_dir()
+    if not os.path.exists(secrets_dir):
+        os.mkdir(secrets_dir, 0700)
+    key_path = os.path.join(secrets_dir, '{}.pem'.format(key_name))
     try:
         key = conn.create_key_pair(key_name)
     except boto.exception.EC2ResponseError:
         # Key exists
-        logger.info('using existing access key {} that shoud be in {}'.format(
+        logger.warning('using existing access key {} that shoud be in {}'.format(
             key_name, key_path))
     else:
         os.umask(0x077)
@@ -75,7 +72,7 @@ def bootstrap(key_name='testk6', group_name='testg'):
             f.write(key.material)
 
     public_ip = create_ec2(conn, group_name, key_name)
-    config = {
+    cfg = {
         'master': {
             'ssh': {
                 'HostName': public_ip,
@@ -84,5 +81,5 @@ def bootstrap(key_name='testk6', group_name='testg'):
             }
         }
     }
-    set_platform_config(config)
+    config.set_platform_config(cfg, merge=False)
     conn.close()

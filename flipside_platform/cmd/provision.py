@@ -2,7 +2,6 @@
 flipside-provision command
 
 '''
-from invoke import run
 
 from .. import provision
 from .. import config

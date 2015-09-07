@@ -6,18 +6,26 @@ import jinja2
 import yaml
 
 
+class ConfigNotFoundError(Exception):
+    pass
+
+
 def get_platform_config():
     fname = get_app_platform_config_path()
     if not os.path.isfile(fname):
-        raise ValueError('platform config file {} not found'.format(fname))
+        raise ConfigNotFoundError('platform config file {} not found'.format(fname))
     with open(fname, 'r') as f:
         return yaml.load(f)
 
 
 def set_platform_config(config, merge=True):
     if merge:
-        default = get_platform_config()
-        default.update(config)
+        try:
+            default = get_platform_config()
+        except ConfigNotFoundError:
+            pass
+        else:
+            default.update(config)
     else:
         default = config
     with open(get_app_platform_config_path(), 'wb') as f:
@@ -44,7 +52,6 @@ def get_master_ssh_params(target):
 
 def get_app_platform_config_path():
     return os.path.join(get_app_path(), '.flipside-platform.yaml')
-
 
 
 def get_flipside_base_dir():
@@ -126,3 +133,11 @@ def is_platform_standalone():
         return get_platform_config()['master'].get('standalone', False)
     except KeyError:
         return False
+
+
+def get_secrets_dir():
+    return os.path.join(get_app_path(), '.secrets')
+
+
+def get_app_name():
+    return get_app_config()['appName']

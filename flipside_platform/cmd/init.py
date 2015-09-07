@@ -3,8 +3,6 @@ flipside init
 '''
 import os
 
-import yaml
-
 from .. import config
 
 # Set from commandline params

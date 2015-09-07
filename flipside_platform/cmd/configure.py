@@ -40,7 +40,7 @@ def do_configure(target, do_config=False):
         salt_config_path = config.get_app_salt_config_path()
         dst_config_path = '/etc/salt/{}.d/01-flipside-app-{}.conf'.format(
             'minion' if standalone else 'master',
-            app_config['appName']
+            config.get_app_name()
         )
         remote_tmp = '/tmp/xxxx'  # XXX
         utils.platform_scp(

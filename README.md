@@ -42,11 +42,12 @@ Uploads the app into the master:
 
 ### Bootstrap
 
-To bootstrap a master machine:
+To bootstrap a machine (later you can provision salt on it):
 
     flipside-bootstrap --target=[aws|vagrant] --keyname=<keyname>
 
 When target is aws:
+
 - the newly created key is stored under `.secrets` dir
 - the master configuration is stored in `.flipside-platform.yaml`
 
@@ -90,6 +91,7 @@ Deploy an application
     flipside-deploy --target=[aws|vagrant]
 
 **KNOWN ISSUES**: deploys all apps together
+
 
 ### SSH access
 

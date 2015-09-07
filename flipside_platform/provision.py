@@ -16,23 +16,31 @@ import tempfile
 import os
 
 
+#: Wait for service restart
+RESTART_WAIT = 10
+MINION_KEY_NAME = 'local'
+
+
 def install_salt(standalone, version='stable latest'):
     '''Install Salt on the local machine'''
     resp = urlopen('https://bootstrap.saltstack.com')
     assert resp.status == 200
+
     with tempfile.NamedTemporaryFile(mode='w+b') as f:
         f.write(resp.read())
         f.flush()
         subprocess.check_call(
             'sh {script} {opts} -n -p python-pip -p python-dev -p libtiff4-dev -p libjpeg8-dev -p zlib1g-dev -p libfreetype6-dev -p liblcms2-dev -p libwebp-dev -p libffi-dev -p libssl-dev -p libssh2-1-dev -p cmake {version}'.format(
                 script=f.name,
-                opts='-X' if standalone else '-M -i local -A 127.0.0.1',
+                opts='-X' if standalone else '-M -i {} -A 127.0.0.1'.format(MINION_KEY_NAME),
                 version=version
             ).split()
         )
         if not subprocess.check_output('pip show pygit2'.split()):
-            subprocess.check_call(['bash', '-c', 'wget https://github.com/libgit2/libgit2/archive/v0.21.2.tar.gz && tar xzf v0.21.2.tar.gz && cd libgit2-0.21.2/ && cmake . && cmake build . && make install && ldconfig'], cwd='/tmp')
-            subprocess.check_call('pip install pygit2==0.21.4'.split())
+            LIBGIT2_VERSION = '0.21.2'
+            PYGIT2_VERSION = '0.21.4'
+            subprocess.check_call(['bash', '-c', 'wget https://github.com/libgit2/libgit2/archive/v{version}.tar.gz && tar xzf v{version}.tar.gz && cd libgit2-{version}/ && cmake . && cmake build . && make install && ldconfig'.format(version=LIBGIT2_VERSION)], cwd='/tmp')
+            subprocess.check_call('pip install pygit2=={version}'.format(version=PYGIT2_VERSION).split())
         else:
             print('pygit2 already installed')
 

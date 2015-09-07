@@ -24,8 +24,10 @@ def main():
                         help='target machine (aws, vagrant)',
                         choices=['vagrant', 'aws'], required=True)
     parser.add_argument('--keyname',
-                        help='aws keypair name. Will be sotred in .secrets/',
+                        help='aws keypair name. Will be stored in .secrets/',
                         default='keypair')
+    parser.add_argument('--askpass', action='store_true',
+                        help='ask aws security credentials')
     args = parser.parse_args()
     do_bootstrap(**vars(args))
 
