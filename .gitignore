@@ -22,3 +22,13 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+/*.egg-info
+/virtual
+
+# Emacs
+*~

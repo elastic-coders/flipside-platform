@@ -1,0 +1,6 @@
+appName: {{ app_name }}
+template: {{ template }}
+build:
+  function: flipside_platform.build.grunt_build.build
+deploy:
+  type: salt

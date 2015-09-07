@@ -1,0 +1,5 @@
+name: django site
+extra_context:
+  server_name: the website hostname
+  package_name: the python package to install
+  django_project_package: the main python package name containing the settings
