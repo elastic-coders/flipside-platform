@@ -9,10 +9,7 @@
 2. `sudo salt \* saltutil.refresh_pillar`
 3. TODO: `sudo salt \* saltutil.sync_modules`
 '''
-import importlib
-import re
 import os
-import shutil
 import logging
 import subprocess
 import time
@@ -23,7 +20,6 @@ from .. import utils
 
 def do_configure(target, do_config=False):
     src_path = config.get_app_salt_path()
-    app_config = config.get_app_config()
     transfers = [
         (os.path.join(src_path, 'state'), '/srv/salt/'),
         (os.path.join(src_path, 'pillar'), '/srv/pillar/'),
@@ -62,7 +58,7 @@ def do_configure(target, do_config=False):
                 try:
                     utils.platform_ssh(
                         target,
-                        args=['sudo', 'salt', '-l', 'quiet', '\*', 'test.ping']
+                        args=['sudo', 'salt', '--failhard', '-l', 'quiet', '\*', 'test.ping']
                     )
                 except subprocess.CalledProcessError:
                     logging.warning('retrying to connect to minions. Sleeping')
@@ -82,12 +78,11 @@ def main():
     parser.add_argument('--target',
                         help='target machine (aws, vagrant)',
                         choices=['vagrant', 'aws'], required=True)
-    parser.add_argument('--config',
-                        help='update master config too (restarts master)',
-                        action='store_true',
-                        default=True)
+    parser.add_argument('--no-config',
+                        help='don\'t update master configuration (avoid master restart)',
+                        action='store_false')
     args = parser.parse_args()
-    do_configure(args.target, args.config)
+    do_configure(args.target, not args.no_config)
 
 if __name__ == '__main__':
     main()
