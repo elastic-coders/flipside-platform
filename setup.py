@@ -6,7 +6,7 @@ with open(os.path.join(os.path.dirname(__file__), 'requirements.txt'), 'rb') as 
 
 setup(
     name='flipside-platform',
-    version='0.2-dev',
+    version='0.2',
     description='Flipside platform automation',
     packages=find_packages(),
     install_requires=requires,
